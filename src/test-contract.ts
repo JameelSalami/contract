@@ -1,6 +1,7 @@
 import { Schema } from "effect";
 
 import {
+  compareText,
   NonEmpty,
   RefDigestSchema,
   decodeStrict,
@@ -108,8 +109,8 @@ const sortRefs = (
     [...refs]
       .map((item) => Object.freeze({ ref: item.ref, digest: item.digest }))
       .sort((a, b) => {
-        const byRef = a.ref.localeCompare(b.ref);
-        return byRef === 0 ? a.digest.localeCompare(b.digest) : byRef;
+        const byRef = compareText(a.ref, b.ref);
+        return byRef === 0 ? compareText(a.digest, b.digest) : byRef;
       })
   );
 

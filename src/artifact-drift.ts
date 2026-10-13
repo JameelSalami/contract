@@ -1,3 +1,4 @@
+import { compareText } from "./internal.js";
 import type { ArtifactManifest, ArtifactOwnership } from "./artifact-manifest.js";
 
 export interface ObservedArtifact {
@@ -62,7 +63,7 @@ export function observeArtifactDrift(
     manifestDigest: manifest.digest,
     entries: Object.freeze(
       entries
-        .sort((a, b) => a.path.localeCompare(b.path))
+        .sort((a, b) => compareText(a.path, b.path))
         .map((entry) => Object.freeze(entry)),
     ),
   });

@@ -1,5 +1,5 @@
 import { Schema } from "effect";
-import { NonEmpty, decodeStrict, hasDuplicates, sortedUnique } from "./internal.js";
+import { compareText, NonEmpty, decodeStrict, hasDuplicates, sortedUnique } from "./internal.js";
 
 const LawSchema = Schema.Struct({
   id: NonEmpty,
@@ -206,7 +206,7 @@ export function compileHumanProjectionContract(
               verificationClasses: Object.freeze(sortedUnique(law.verificationClasses)),
             }),
           )
-          .sort((a, b) => a.id.localeCompare(b.id)),
+          .sort((a, b) => compareText(a.id, b.id)),
       ),
       conformanceClasses: Object.freeze(sortedUnique(decoded.conformanceClasses)),
       prohibitions: Object.freeze([...decoded.prohibitions]),

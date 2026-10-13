@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 import { canonicalDigest } from "./canonical.js";
-import { decodeStrict, Digest, hasDuplicates, NonEmpty } from "./internal.js";
+import { compareText, decodeStrict, Digest, hasDuplicates, NonEmpty } from "./internal.js";
 
 const Foundation = Schema.Literal("contract", "state", "trace", "assurance");
 const Interface = Schema.Struct({ id: NonEmpty, version: NonEmpty });
@@ -126,7 +126,7 @@ export function discoverExtensions(
     ) results.push(entry);
   }
   results.sort((a, b) =>
-    [a.id, a.version, a.digest].join("\0").localeCompare([b.id, b.version, b.digest].join("\0")));
+    compareText([a.id, a.version, a.digest].join("\0"), [b.id, b.version, b.digest].join("\0")));
   return { _tag: "ExtensionDiscovery", manifests: Object.freeze(results), authority: "none" };
 }
 

@@ -1,5 +1,5 @@
 import { Schema } from "effect";
-import { NonEmpty, decodeStrict, hasDuplicates, sortedUnique } from "./internal.js";
+import { compareText, NonEmpty, decodeStrict, hasDuplicates, sortedUnique } from "./internal.js";
 
 const StageSchema = Schema.Literal("pre-code", "post-code", "both");
 
@@ -106,7 +106,7 @@ export function compileVerificationContract(input: unknown): VerificationContrac
       evidenceClasses: Object.freeze(
         [...decoded.evidenceClasses]
           .map((item) => Object.freeze({ id: item.id, meaning: item.meaning, stage: item.stage }))
-          .sort((a, b) => a.id.localeCompare(b.id)),
+          .sort((a, b) => compareText(a.id, b.id)),
       ),
       obligations: Object.freeze(
         [...decoded.obligations]
@@ -121,7 +121,7 @@ export function compileVerificationContract(input: unknown): VerificationContrac
               stage: item.stage,
             }),
           )
-          .sort((a, b) => a.id.localeCompare(b.id)),
+          .sort((a, b) => compareText(a.id, b.id)),
       ),
       authority: "none",
     }),

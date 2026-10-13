@@ -1,3 +1,4 @@
+import { verifiedProjectionDigest } from "./projection-integrity.js";
 import { Schema } from "effect";
 import { canonicalDigest } from "./canonical.js";
 import type { DocumentSourceProjection } from "./document-source.js";
@@ -39,11 +40,12 @@ function validProjection(value: unknown): value is DocumentSourceProjection {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
   const projection = value as Partial<DocumentSourceProjection>;
   return (
+    verifiedProjectionDigest(projection) &&
     projection.schema === "contract.document-source-projection/v1" &&
     typeof projection.source === "object" &&
     projection.source !== null &&
     typeof projection.source.ref === "string" &&
-    projection.source.ref.length > 0 &&
+    projection.source.ref === "document:" + projection.source.path &&
     typeof projection.source.kind === "string" &&
     projection.source.kind.length > 0 &&
     typeof projection.source.path === "string" &&

@@ -39,3 +39,35 @@ test("document adapter refuses traversal paths", () => {
   });
   assert.equal(bad._tag, "Refusal");
 });
+
+
+test("document projection sorting is independent of process locale", async () => {
+  const { spawnSync } = await import("node:child_process");
+  const code = [
+    'import { projectDocuments } from "./src/document-adapter.ts";',
+    'const value = projectDocuments({',
+    '  source: { ref: "s", digest: "sha256:" + "a".repeat(64) },',
+    '  adapter: { id: "deterministic", version: "1", render: () =>',
+    '    ["ä", "z", "a"].map(path => ({ ref: path, path: path+".md",',
+    '      kind: "doc", mediaType:"text/plain", content: "x" })) },',
+    '  input: null',
+    '});',
+    'if (value._tag !== "DocumentProjection") throw Error(value.reason);',
+    'process.stdout.write(JSON.stringify({ digest: value.projection.digest,',
+    '  files: value.projection.files.map(file => file.path) }));',
+  ].join("\n");
+  const outputs: string[] = [];
+  for (const locale of ["en_US.UTF-8", "sv_SE.UTF-8"]) {
+    const child = spawnSync(process.execPath,
+      ["--import", "tsx", "--input-type=module", "-e", code],
+      { cwd: process.cwd(), encoding: "utf8", timeout: 30_000,
+        env: { ...process.env, LANG: locale, LC_ALL: locale } });
+    assert.equal(child.status, 0, child.stderr);
+    outputs.push(child.stdout);
+  }
+  assert.equal(outputs[0], outputs[1]);
+  assert.deepEqual(JSON.parse(outputs[0]!), {
+    digest: JSON.parse(outputs[1]!).digest,
+    files: ["a.md", "z.md", "ä.md"],
+  });
+});

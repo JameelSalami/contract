@@ -29,7 +29,7 @@ From this independent source repository:
 
 ```sh
 npm ci
-npm run verify             # typecheck, 68 tests, production build
+npm run verify             # typecheck, tests, production build
 npm run verify:install     # real npm pack + isolated ESM / declaration consumer
 ```
 
@@ -118,6 +118,12 @@ change historical wire formats or schema identifiers.
 - Extension manifests do not load or run plugins, attest the integrity of a
   publisher, or authorize state changes. Consumers must authenticate sources,
   independently verify evidence, and enforce user authorization.
+- Source bindings now recompute projection digests and skill bindings
+  reconstruct the complete file closure from the included file bytes before
+  acceptance. These integrity checks do not authenticate an externally supplied
+  original document, publisher, or producer; hosts must verify source identity
+  and provenance independently. Plain prose is not silently converted into
+  policy or executable rules.
 - Source projections do not infer domain policy from prose. Change candidates
   are descriptions, never executable change plans.
 - There is no CommonJS `require` condition or guarantee of browser,

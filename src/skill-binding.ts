@@ -1,3 +1,5 @@
+import { compileSkillSource } from "./skill-source.js";
+import { verifiedProjectionDigest } from "./projection-integrity.js";
 import { Schema } from "effect";
 import { canonicalDigest } from "./canonical.js";
 import type { SkillSourceProjection } from "./skill-source.js";
@@ -36,6 +38,31 @@ export type SkillBindingResult =
         | "binding-not-canonicalizable";
     };
 
+function verifiedSkillClosure(projection: SkillSourceProjection): boolean {
+  try {
+    // The complete file content is available in SkillSourceProjection. Reparse
+    // it independently, so metadata changes cannot be smuggled through with
+    // stale hashes or a hand-rehashed projection.
+    const recomputed = compileSkillSource({
+      root: projection.source.root,
+      entrypoint: projection.source.entrypoint,
+      files: projection.files.map((file) => ({
+        path: file.path,
+        kind: file.kind,
+        mediaType: file.mediaType,
+        content: file.content,
+      })),
+    });
+    if (recomputed._tag !== "SkillSourceProjection") return false;
+    const supplied = canonicalDigest(projection);
+    const rebuilt = canonicalDigest(recomputed.projection);
+    return supplied._tag === "Digest" &&
+      rebuilt._tag === "Digest" && supplied.digest === rebuilt.digest;
+  } catch {
+    return false;
+  }
+}
+
 function validProjection(value: unknown): value is SkillSourceProjection {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
   const projection = value as Partial<SkillSourceProjection>;
@@ -50,7 +77,8 @@ function validProjection(value: unknown): value is SkillSourceProjection {
     /^sha256:[0-9a-f]{64}$/.test(String(projection.source.closureDigest ?? "")) &&
     /^sha256:[0-9a-f]{64}$/.test(String(projection.projectionDigest ?? "")) &&
     Array.isArray(projection.files) &&
-    projection.files.some((file) => file.path === projection.source!.entrypoint)
+    projection.files.some((file) => file.path === projection.source!.entrypoint) &&
+    verifiedSkillClosure(projection as SkillSourceProjection)
   );
 }
 

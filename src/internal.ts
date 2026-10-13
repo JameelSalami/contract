@@ -28,8 +28,13 @@ export function decodeStrict<A, I>(
   }
 }
 
+/** Stable UTF-16 code-unit order; never use host-locale collation for identities. */
+export function compareText(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
 export function sortedUnique(values: readonly string[]): string[] {
-  return [...new Set(values)].sort((a, b) => a.localeCompare(b));
+  return [...new Set(values)].sort(compareText);
 }
 
 export function hasDuplicates(values: readonly string[]): boolean {

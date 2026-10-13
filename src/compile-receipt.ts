@@ -1,6 +1,7 @@
 import { Schema } from "effect";
 import { canonicalDigest } from "./canonical.js";
 import {
+  compareText,
   IdentitySchema,
   NonEmpty,
   RefDigestSchema,
@@ -69,7 +70,7 @@ export function compileReceipt(input: unknown): CompileReceiptResult {
     },
     sources: [...decoded.sources]
       .map((source) => ({ ref: source.ref, digest: source.digest }))
-      .sort((a, b) => a.ref.localeCompare(b.ref)),
+      .sort((a, b) => compareText(a.ref, b.ref)),
     outcome:
       decoded.outcome.kind === "verified"
         ? {

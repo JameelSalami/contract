@@ -1,3 +1,4 @@
+import { verifiedProjectionDigest } from "./projection-integrity.js";
 import { Schema } from "effect";
 import { canonicalDigest } from "./canonical.js";
 import type { DesignSourceProjection } from "./design-source.js";
@@ -43,12 +44,13 @@ function validProjection(value: unknown): value is DesignSourceProjection {
   ) return false;
   const projection = value as Partial<DesignSourceProjection>;
   return (
+    verifiedProjectionDigest(projection) &&
     projection.schema === "contract.design-source-projection/v1" &&
     typeof projection.source === "object" &&
     projection.source !== null &&
     projection.source.kind === "design-md" &&
     typeof projection.source.ref === "string" &&
-    projection.source.ref.length > 0 &&
+    projection.source.ref === "design:" + projection.source.path &&
     typeof projection.source.path === "string" &&
     /^sha256:[0-9a-f]{64}$/.test(String(projection.source.digest ?? "")) &&
     /^sha256:[0-9a-f]{64}$/.test(String(projection.projectionDigest ?? ""))

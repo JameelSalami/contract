@@ -1,7 +1,8 @@
+import { verifiedProjectionDigest } from "./projection-integrity.js";
 import { Schema } from "effect";
 import { canonicalDigest } from "./canonical.js";
 import type { GuidanceSourceProjection } from "./guidance-source.js";
-import { NonEmpty, decodeStrict, sortedUnique } from "./internal.js";
+import { compareText, NonEmpty, decodeStrict, sortedUnique } from "./internal.js";
 
 const InputSchema = Schema.Struct({
   id: NonEmpty,
@@ -44,11 +45,12 @@ function validProjection(value: unknown): value is GuidanceSourceProjection {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
   const projection = value as Partial<GuidanceSourceProjection>;
   return (
+    verifiedProjectionDigest(projection) &&
     projection.schema === "contract.guidance-source-projection/v1" &&
     typeof projection.source === "object" &&
     projection.source !== null &&
     typeof projection.source.ref === "string" &&
-    projection.source.ref.length > 0 &&
+    projection.source.ref === "guidance:" + projection.source.path &&
     typeof projection.source.format === "string" &&
     projection.source.format.length > 0 &&
     typeof projection.source.path === "string" &&
@@ -80,7 +82,7 @@ export function compileGuidanceBinding(input: unknown): GuidanceBindingResult {
         digest: source.source.digest,
         projectionDigest: source.projectionDigest,
       }))
-      .sort((a, b) => a.ref.localeCompare(b.ref)),
+      .sort((a, b) => compareText(a.ref, b.ref)),
   );
   const body = {
     schema: "contract.guidance-binding/v1" as const,

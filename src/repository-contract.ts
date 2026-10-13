@@ -1,5 +1,6 @@
 import { Schema } from "effect";
 import {
+  compareText,
   NonEmpty,
   decodeStrict,
   hasDuplicates,
@@ -115,7 +116,7 @@ export function compileRepositoryContract(
       exports: sortedUnique(module.exports),
       guarantees: [...module.guarantees],
     }))
-    .sort((a, b) => a.id.localeCompare(b.id));
+    .sort((a, b) => compareText(a.id, b.id));
 
   return {
     _tag: "RepositoryContract",

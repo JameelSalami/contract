@@ -1,7 +1,7 @@
 import { parseDocument } from "yaml";
 import { canonicalDigest } from "./canonical.js";
 import { contentDigest } from "./content-identity.js";
-import { safeRelativePath, sortedUnique } from "./internal.js";
+import { compareText, safeRelativePath, sortedUnique } from "./internal.js";
 
 export type SkillJson =
   | null
@@ -190,7 +190,7 @@ export function compileSkillSource(input: unknown): SkillSourceResult {
   const normalizedFiles = Object.freeze(
     files
       .map((file) => Object.freeze({ ...file }))
-      .sort((a, b) => a.path.localeCompare(b.path)),
+      .sort((a, b) => compareText(a.path, b.path)),
   );
   const manifest = normalizedFiles.map(({ path, kind, mediaType, digest, bytes }) => ({
     path,

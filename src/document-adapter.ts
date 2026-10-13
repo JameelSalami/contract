@@ -1,5 +1,5 @@
 import { canonicalDigest } from "./canonical.js";
-import { safeRelativePath, sha256Text } from "./internal.js";
+import { compareText, safeRelativePath, sha256Text } from "./internal.js";
 
 export interface DocumentSource {
   readonly ref: string;
@@ -99,7 +99,7 @@ function normalizeOutputs(
 
   return {
     _tag: "Normalized",
-    outputs: outputs.sort((a, b) => a.path.localeCompare(b.path)),
+    outputs: outputs.sort((a, b) => compareText(a.path, b.path)),
   };
 }
 

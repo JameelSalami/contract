@@ -1,6 +1,7 @@
 import { Schema } from "effect";
 import { canonicalDigest } from "./canonical.js";
 import {
+  compareText,
   Digest,
   IdentitySchema,
   NonEmpty,
@@ -105,7 +106,7 @@ export function compileArtifactManifest(input: unknown): ArtifactManifestResult 
     });
   }
 
-  artifacts.sort((a, b) => a.ref.localeCompare(b.ref));
+  artifacts.sort((a, b) => compareText(a.ref, b.ref));
   const body = {
     schema: "contract.artifact-manifest/v1" as const,
     projectId: decoded.projectId,

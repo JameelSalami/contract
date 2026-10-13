@@ -1,5 +1,5 @@
 import { Schema } from "effect";
-import { NonEmpty, decodeStrict, hasDuplicates, sortedUnique } from "./internal.js";
+import { compareText, NonEmpty, decodeStrict, hasDuplicates, sortedUnique } from "./internal.js";
 
 const InputSchema = Schema.Struct({
   nodes: Schema.Array(NonEmpty),
@@ -94,7 +94,7 @@ export function calculateChangeImpact(input: unknown): ChangeImpactResult {
     impact: Object.freeze({
       schema: "contract.change-impact/v1",
       changedRefs: Object.freeze(changedRefs),
-      affectedRefs: Object.freeze([...visited].sort((a, b) => a.localeCompare(b))),
+      affectedRefs: Object.freeze([...visited].sort((a, b) => compareText(a, b))),
     }),
   };
 }

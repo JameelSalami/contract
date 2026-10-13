@@ -177,7 +177,7 @@ function sections(markdown: string): readonly { readonly heading: string; readon
     if (match) {
       flush();
       const heading = match[1]!.trim();
-      const key = heading.toLocaleLowerCase();
+      const key = heading.toLowerCase();
       if (!heading || seen.has(key)) return null;
       seen.add(key);
       current = { heading, bodyLines: [] };

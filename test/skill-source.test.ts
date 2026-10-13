@@ -53,9 +53,9 @@ test("skill source content-addresses the declared multi-file closure and SKILL m
   assert.deepEqual(result.projection.metadata.capabilities, ["repository-read"]);
   assert.deepEqual(result.projection.metadata.extensions, { custom_flag: "retained" });
   assert.deepEqual(result.projection.files.map((file) => file.path), [
+    "SKILL.md",
     "references/quality.md",
     "scripts/gh-index.sh",
-    "SKILL.md",
   ]);
 });
 

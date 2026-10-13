@@ -1,5 +1,5 @@
 import { Schema } from "effect";
-import { NonEmpty, decodeStrict, hasDuplicates } from "./internal.js";
+import { compareText, NonEmpty, decodeStrict, hasDuplicates } from "./internal.js";
 
 const ExportSchema = Schema.Struct({
   name: NonEmpty,
@@ -83,7 +83,7 @@ export function compileDeepModuleContract(input: unknown): DeepModuleContractRes
       arity: item.arity,
       ...(item.returns === undefined ? {} : { returns: item.returns }),
     }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => compareText(a.name, b.name));
 
   return {
     _tag: "DeepModuleContract",

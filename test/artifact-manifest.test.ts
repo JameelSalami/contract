@@ -63,3 +63,30 @@ test("artifact manifest fails closed on unsafe paths, duplicates, and source-les
     }]
   })._tag, "Refusal");
 });
+
+
+test("artifact manifest locale-independent array sorting is stable across hosts", async () => {
+  const { spawnSync } = await import("node:child_process");
+  const script = [
+    'import { compileArtifactManifest } from "./src/artifact-manifest.ts";',
+    'const digest = (c) => "sha256:" + c.repeat(64);',
+    'const refs = ["a", "z", "ä"];',
+    'const x = compileArtifactManifest({projectId:"p",artifacts:refs.map((ref)=>({',
+    '  ref, kind:"doc",path:ref+".md",ownership:"human",',
+    '  digest:digest("a"),sourceRefs:["z","ä","a"]',
+    '}))});',
+    'if (x._tag !== "ArtifactManifest") throw Error(x.reason);',
+    'process.stdout.write(JSON.stringify(x.manifest));',
+  ].join("\n");
+  const outputs: string[] = [];
+  for (const locale of ["en_US.UTF-8", "sv_SE.UTF-8"]) {
+    const result = spawnSync(process.execPath,
+      ["--import", "tsx", "--input-type=module", "-e", script],
+      { cwd: process.cwd(), encoding: "utf8", timeout: 30_000,
+        env: { ...process.env, LANG: locale, LC_ALL: locale } });
+    assert.equal(result.status, 0, result.stderr);
+    outputs.push(result.stdout);
+  }
+  assert.equal(outputs[0], outputs[1]);
+  assert.deepEqual(JSON.parse(outputs[0]!).artifacts.map((x: { ref: string }) => x.ref), ["a", "z", "ä"]);
+});
