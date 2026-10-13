@@ -15,11 +15,9 @@ or grant permissions.
 
 - Node.js **20.19+** (NodeNext ESM), npm **10+** for source builds.
 - TypeScript **5.9+** recommended for type consumers using NodeNext resolution.
-- The planned npm identity is `@durable-systems/contract`. Until namespace approval
-  and publication, install from a locally built release tarball, not from a
-  nonexistent npm registry entry.
+- Public npm package: `@durable-systems/contract@0.1.0`.
 
-Once published:
+Install from npm:
 
 ```sh
 npm install @durable-systems/contract
