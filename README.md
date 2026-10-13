@@ -105,8 +105,14 @@ change historical wire formats or schema identifiers.
   `_tag` before using their results.
 - `canonicalDigest` accepts JSON-like plain data, rejects cycles, unsafe
   numeric values, `undefined`, functions, and class instances; object keys
-  are canonicalized. A digest is an integrity reference, not a signature,
-  proof of provenance, or authorization.
+  are serialized in **locale-independent UTF-16 code-unit lexical order**,
+  including numeric-looking and Unicode property names. This is not a claim
+  of full RFC 8785 compatibility. The corrected v0.1.0 pre-npm-release
+  encoding preserves the existing frozen digests, but can change hashes for
+  records historically digested from Git checkouts with locale-sensitive or
+  array-index-like property names; reissue those early references rather than
+  treating their hashes as interchangeable. A digest is an integrity
+  reference, not a signature, proof of provenance, or authorization.
 - Conformance utilities compare *provided fixtures and observations*; they
   cannot establish coverage of tests that nobody supplied.
 - Extension manifests do not load or run plugins, attest the integrity of a
