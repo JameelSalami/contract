@@ -1,0 +1,371 @@
+{
+  "schema": "contract.repository-contract/v1",
+  "package": {
+    "name": "contract",
+    "version": "0.1.0"
+  },
+  "implementation": {
+    "language": "typescript",
+    "effect": "required",
+    "xstate": "optional-not-core"
+  },
+  "rules": {
+    "markdownDocs": "forbidden",
+    "wireContracts": "plain-json",
+    "generatedChecks": "read-only",
+    "changeCandidatesExecutable": false,
+    "domainSemantics": "project-local"
+  },
+  "modules": [
+    {
+      "id": "repository-contract",
+      "source": "src/repository-contract.ts",
+      "exports": [
+        "compileRepositoryContract"
+      ],
+      "guarantees": [
+        "repository governance compiles from open JSON-like input to a closed contract or typed refusal",
+        "unknown governance fields fail closed",
+        "the core explicitly rejects mandatory XState ownership"
+      ]
+    },
+    {
+      "id": "canonical-identity",
+      "source": "src/canonical.ts",
+      "exports": [
+        "canonicalDigest"
+      ],
+      "guarantees": [
+        "semantically identical JSON objects have identical digests independent of key order",
+        "non-JSON and unsafe integer values refuse rather than silently normalize"
+      ]
+    },
+    {
+      "id": "content-identity",
+      "source": "src/content-identity.ts",
+      "exports": [
+        "contentDigest"
+      ],
+      "guarantees": [
+        "content identity hashes exact bytes rather than semantic JSON normalization",
+        "UTF-8 text and its equivalent byte sequence have the same identity"
+      ]
+    },
+    {
+      "id": "compilation-receipt",
+      "source": "src/compile-receipt.ts",
+      "exports": [
+        "compileReceipt"
+      ],
+      "guarantees": [
+        "compiler outcomes bind exact source identities and compiler identity",
+        "receipt normalization is deterministic",
+        "verified and refused outcomes remain distinct"
+      ]
+    },
+    {
+      "id": "artifact-manifest",
+      "source": "src/artifact-manifest.ts",
+      "exports": [
+        "compileArtifactManifest"
+      ],
+      "guarantees": [
+        "generated, human-owned and external artifacts retain distinct ownership",
+        "generated artifacts cite source references and generator identity",
+        "artifact paths are relative, unique and traversal-safe"
+      ]
+    },
+    {
+      "id": "dependency-impact",
+      "source": "src/dependency-impact.ts",
+      "exports": [
+        "calculateChangeImpact"
+      ],
+      "guarantees": [
+        "change impact follows only explicit dependency edges",
+        "project-local edge relation names remain opaque to the shared core",
+        "projects explicitly select which relationship types propagate changes when needed",
+        "cycles terminate deterministically"
+      ]
+    },
+    {
+      "id": "verification-receipt",
+      "source": "src/verification-receipt.ts",
+      "exports": [
+        "compileVerificationReceipt"
+      ],
+      "guarantees": [
+        "verification binds subject identity, checker identity and evidence",
+        "falsifier or case identities remain explicit",
+        "verification outcome never grants execution authority"
+      ]
+    },
+    {
+      "id": "artifact-drift",
+      "source": "src/artifact-drift.ts",
+      "exports": [
+        "observeArtifactDrift"
+      ],
+      "guarantees": [
+        "drift observation is read-only",
+        "missing, mismatched and untracked artifacts remain explicit",
+        "artifact ownership is preserved in drift observations"
+      ]
+    },
+    {
+      "id": "conformance",
+      "source": "src/conformance.ts",
+      "exports": [
+        "runConformance"
+      ],
+      "guarantees": [
+        "fixtures are isolated and frozen before implementation invocation",
+        "implementation exceptions become observations rather than oracle crashes",
+        "semantic equivalence remains project-owned through an injected comparator"
+      ]
+    },
+    {
+      "id": "change-candidate",
+      "source": "src/change-candidate.ts",
+      "exports": [
+        "compileChangeCandidate"
+      ],
+      "guarantees": [
+        "change candidates bind evidence and target references",
+        "change candidates are permanently non-executable",
+        "attempted executable authority fails closed"
+      ]
+    },
+    {
+      "id": "decision-boundary",
+      "source": "src/decision-boundary.ts",
+      "exports": [
+        "observeDecisionBoundaryDrift"
+      ],
+      "guarantees": [
+        "human and automation decision modes remain explicit",
+        "movement toward greater automation is visible as authority drift",
+        "decision-boundary observation does not authorize the change"
+      ]
+    },
+    {
+      "id": "deep-module-contract",
+      "source": "src/deep-module-contract.ts",
+      "exports": [
+        "compileDeepModuleContract"
+      ],
+      "guarantees": [
+        "deep modules expose small stable public seams around coherent hidden complexity",
+        "declared public surface and argument budgets fail closed when exceeded",
+        "deep-module contracts carry authority none"
+      ]
+    },
+    {
+      "id": "engineering-doctrine-contract",
+      "source": "src/engineering-doctrine-contract.ts",
+      "exports": [
+        "compileEngineeringDoctrineContract"
+      ],
+      "guarantees": [
+        "engineering doctrine is domain-neutral and machine-readable",
+        "complexity is measured at the consumer boundary",
+        "ownership, boundary and verification laws remain explicit"
+      ]
+    },
+    {
+      "id": "verification-contract",
+      "source": "src/verification-contract.ts",
+      "exports": [
+        "compileVerificationContract"
+      ],
+      "guarantees": [
+        "verification obligations are declared before evidence receipts",
+        "verification-class references resolve explicitly",
+        "verification contracts remain authority none and project-extensible"
+      ]
+    },
+    {
+      "id": "test-contract",
+      "source": "src/test-contract.ts",
+      "exports": [
+        "compileTestContract"
+      ],
+      "guarantees": [
+        "test protocols are frozen and content-addressed before execution",
+        "subject, case, checker, fixture and environment identities remain exact while their project-local meanings stay opaque to the shared core",
+        "read-only and declared-effect tests remain explicit and declared-effect tests name their allowed capability references",
+        "required checks, blocker checks, Unknown handling and evidence classes are fixed before receipts exist",
+        "test contracts carry authority none and do not authorize declared effects"
+      ]
+    },
+    {
+      "id": "document-adapter",
+      "source": "src/document-adapter.ts",
+      "exports": [
+        "projectDocuments"
+      ],
+      "guarantees": [
+        "document kinds remain project-extensible rather than a universal taxonomy",
+        "generated documents are deterministic source-bound artifacts",
+        "document adapters own rendering mechanism but not project semantics"
+      ]
+    },
+    {
+      "id": "human-projection-contract",
+      "source": "src/human-projection-contract.ts",
+      "exports": [
+        "compileHumanProjectionContract"
+      ],
+      "guarantees": [
+        "human-facing projections remain non-authoritative and source-traceable",
+        "unknown, stale, proposal, dispatch and observed outcome states remain materially distinguishable",
+        "human interaction mechanisms may vary without changing semantic meaning or authority"
+      ]
+    },
+    {
+      "id": "ui-composition-contract",
+      "source": "src/ui-composition-contract.ts",
+      "exports": [
+        "compileUiCompositionContract"
+      ],
+      "guarantees": [
+        "UI composition uses a closed renderer-independent semantic grammar",
+        "planners select semantic roles and composition rather than arbitrary pixels or raw z values",
+        "reduced-motion and renderer changes preserve material interaction meaning"
+      ]
+    },
+    {
+      "id": "design-source",
+      "source": "src/design-source.ts",
+      "exports": [
+        "compileDesignSource"
+      ],
+      "guarantees": [
+        "DESIGN.md source bytes retain exact content identity",
+        "explicit design tokens are extracted mechanically while prose is preserved without policy inference",
+        "unknown DESIGN.md frontmatter extensions are retained as JSON-like source data"
+      ]
+    },
+    {
+      "id": "design-source-binding",
+      "source": "src/design-source-binding.ts",
+      "exports": [
+        "compileDesignSourceBinding"
+      ],
+      "guarantees": [
+        "human-owned design source identity is bound separately from executable acceptance obligations",
+        "design source bindings connect exact source and projection digests to generic human/UI contracts and project acceptance",
+        "design bindings remain authority none"
+      ]
+    },
+    {
+      "id": "document-source",
+      "source": "src/document-source.ts",
+      "exports": [
+        "compileDocumentSource"
+      ],
+      "guarantees": [
+        "human or generated repository documents retain exact byte identity and traversal-safe paths",
+        "document kinds remain project-extensible rather than a universal taxonomy",
+        "markdown heading extraction is mechanical structure only and does not infer policy from prose"
+      ]
+    },
+    {
+      "id": "document-binding",
+      "source": "src/document-binding.ts",
+      "exports": [
+        "compileDocumentBinding"
+      ],
+      "guarantees": [
+        "document bindings preserve exact source and projection identity",
+        "binding relation names and target references remain project-owned",
+        "document bindings carry authority none"
+      ]
+    },
+    {
+      "id": "guidance-source",
+      "source": "src/guidance-source.ts",
+      "exports": [
+        "compileGuidanceSource"
+      ],
+      "guarantees": [
+        "agent and repository guidance retain exact source identity",
+        "MDC metadata is parsed explicitly across supported historical frontmatter forms while unknown metadata remains source data",
+        "plain AGENTS, CLAUDE, steering and llms guidance does not acquire inferred policy metadata"
+      ]
+    },
+    {
+      "id": "guidance-binding",
+      "source": "src/guidance-binding.ts",
+      "exports": [
+        "compileGuidanceBinding"
+      ],
+      "guarantees": [
+        "guidance bindings freeze exact source and projection digests for declared targets",
+        "required versus on-demand and inline versus indexed versus external delivery remain explicit",
+        "guidance binding records context delivery intent without granting semantic or execution authority"
+      ]
+    },
+    {
+      "id": "skill-source",
+      "source": "src/skill-source.ts",
+      "exports": [
+        "compileSkillSource"
+      ],
+      "guarantees": [
+        "skills retain exact multi-file closure identity rather than treating SKILL.md as the whole skill",
+        "SKILL frontmatter is parsed mechanically while project-extensible metadata remains source data",
+        "skill files are declared explicitly with traversal-safe paths and byte digests"
+      ]
+    },
+    {
+      "id": "skill-binding",
+      "source": "src/skill-binding.ts",
+      "exports": [
+        "compileSkillBinding"
+      ],
+      "guarantees": [
+        "skill bindings admit an exact skill closure rather than predicting which supporting files a task will need",
+        "skill requirement mode, target references, entrypoint and capability requirements remain explicit",
+        "skill bindings describe needed capabilities but grant no execution authority"
+      ]
+    },
+    {
+      "id": "tooling-contract",
+      "source": "src/tooling-contract.ts",
+      "exports": [
+        "compileToolingContract"
+      ],
+      "guarantees": [
+        "runtime requirements name observable capabilities, not a hardcoded engine version",
+        "runtime discovery and installation remain outside Contract, with consent required for managed fallback",
+        "the tooling declaration carries no executable authority and normalizes independent of capability ordering"
+      ]
+    },
+    {
+      "id": "implementation-contract",
+      "source": "src/implementation-contract.ts",
+      "exports": [
+        "compileImplementationContract"
+      ],
+      "guarantees": [
+        "implementation requirements describe replaceable interfaces and observable capabilities, not a selected database",
+        "selection refuses unqualified adapters and migration requires verified export/import",
+        "the contract carries no storage, execution or domain authority"
+      ]
+    },
+    {
+      "id": "extension-protocol",
+      "source": "src/extension.ts",
+      "exports": [
+        "compileExtensionManifest"
+      ],
+      "guarantees": [
+        "extensions are discoverable through strict, content-addressed, versioned manifests without evaluating extension source",
+        "bindings reference exact manifest, configuration and qualification evidence digests but never admit or activate code",
+        "lifecycle transitions are proposed effects only and reference external authorization, qualification, recovery and migration evidence",
+        "the trusted application independently verifies receipts, evidence and current user authority prior to executing any effect"
+      ]
+    }
+  ]
+}

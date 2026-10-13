@@ -1,0 +1,55 @@
+{
+  "name": "@durable-systems/contract",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "description": "Domain-neutral machine-readable engineering, design, verification, conformance, and drift contracts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jameelsalami/contract.git"
+  },
+  "homepage": "https://github.com/jameelsalami/contract#readme",
+  "bugs": {
+    "url": "https://github.com/jameelsalami/contract/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "contract.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "test": "node --import tsx --test test/*.test.ts",
+    "verify": "npm run typecheck && npm test && npm run build",
+    "prepack": "npm run verify",
+    "verify:install": "node scripts/verify-install.mjs"
+  },
+  "engines": {
+    "node": ">=20.19.0",
+    "npm": ">=10"
+  },
+  "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "effect": "3.22.2",
+    "yaml": "2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
