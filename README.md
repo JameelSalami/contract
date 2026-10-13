@@ -171,3 +171,22 @@ package license. These libraries are *dependencies*, not copied or bundled
 source in this package's npm tarball. Informational citations are not
 copyright or NOTICE compliance: the right to publish this source and any
 inherited obligations must be confirmed before public distribution.
+
+
+## Working document-to-code example
+
+From this source checkout, run:
+
+```sh
+node --import tsx examples/design-tokens/generate.mjs
+node --import tsx examples/design-tokens/generate.mjs --check
+```
+
+This example compiles the example `DESIGN.md` into typed design tokens,
+renders CSS custom properties through the Contract document adapter, and
+records its source/projection/output digests. Change a token in DESIGN.md
+and the `--check` step fails until you regenerate. Tokens are validated
+against a constrained CSS name/value grammar, not interpolated as arbitrary
+executable CSS. The example enforces only explicit structured design tokens,
+not policies inferred from prose. It is a concrete consumer of Contract,
+not a built-in automatic policy engine or a claim of source authenticity.

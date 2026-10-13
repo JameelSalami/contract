@@ -1,0 +1,17 @@
+---
+version: "1"
+name: "Example Design System"
+colors:
+  primary: "#243657"
+  accent: "#e2634f"
+  surface: "#f5f7fa"
+spacing:
+  small: "8px"
+  medium: "16px"
+  large: "24px"
+rounded:
+  card: "12px"
+---
+## Intent
+Use restrained contrast and generous whitespace. This narrative is preserved
+as a source section, not silently inferred into new software policy.
